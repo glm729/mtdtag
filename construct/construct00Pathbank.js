@@ -19,6 +19,7 @@ data.forEach(d => {
   // Build
   output.push({
     smiles: smiles,
+    name: null,
     alias: alias,
     id_kegg: kegg
   });
