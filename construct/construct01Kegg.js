@@ -1,3 +1,5 @@
+//** -- No longer used; superceded by construct02Kegg.js **//
+
 // Pull in the required data from the API, and parse as JSON
 let data = {
   table: JSON.parse(API.getData("fileTable").resurrect().replace(/\s+$/, '')),
