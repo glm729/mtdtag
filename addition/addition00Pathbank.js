@@ -29,7 +29,11 @@ function dataPathbankForeachCallback(dp, data_t) {
   let add = new Object();
   // Define the IDs to add to the table
   let id = {
-    hmdb: dp.main["HMDB ID"]
+    cas: dp.main["CAS"],
+    chebi: dp.main["ChEBI ID"],
+    hmdb: dp.main["HMDB ID"],
+    inchi: dp.main["InChI"],
+    inchikey: dp.main["InChI Key"]
   };
   // For each key in the IDs
   for (let k in id) {
