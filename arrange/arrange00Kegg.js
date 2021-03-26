@@ -7,7 +7,7 @@ let text = new String();
 data.forEach(d => text += d.data);
 
 // Split the text into the compound components
-let comp = text.split(/\/\/\//);
+let comp = text.split(/\/\/\//).map(t => t.trim()).filter(t => t !== '');
 
 // Convert the text into a rudimentary JSON (text segments by header)
 let result = comp.map(handleKeggCompoundText);
