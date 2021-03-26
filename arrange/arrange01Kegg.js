@@ -25,12 +25,11 @@ saveJsonString({
 
 // Rearrange ENTRY
 function kcEntry(text) {
-  let output = new Array();
-  text.forEach(t => {
-    let s = t.split(/\s+/);
-    output.push({id: s[0], db: s[1]});
-  });
-  return output;
+  if (text.length > 1) {
+    throw new Error(`KEGG Compound entry length > 1:\n${text}`);
+  };
+  let s = text[0].split(/\s+/);
+  return {id: s[0], db: s[1]};
 };
 
 // Rearrange NAME
@@ -74,10 +73,10 @@ function kcSwitch(key, text) {
   switch (key) {
     case "dblinks": return kcDblinks(text);
     case "entry": return kcEntry(text);
-    case "module": return kcPathwayModule(text);
     case "name": return kcName(text);
-    case "pathway":
     case "reaction": return kcReaction(text);
+    case "module":
+    case "pathway": return kcPathwayModule(text);
     default: return text;
   };
 };
