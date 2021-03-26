@@ -5,29 +5,31 @@ let file = API.getData("fileTable").resurrect();
 let data = JSON.parse(file.replace(/\s+$/, ''));
 
 // Initialise variables
-let mainKeys = new Array();
-let idKeys = new Array();
+let exclude = ["smiles", "name", "alias", "id"];
 let result = new Array();
+let keys = {
+  id: new Array(),
+  main: new Array(),
+};
 
 // Loop over the data and get the keys
 for (let dt of data) {
   // Loop over the data keys
   for (let k in dt) {
     // This currently only skips, but there may be other keys in future
-    if (["smiles", "name", "alias", "id"].indexOf(k) !== -1) continue;
-    if (mainKeys.indexOf(k) === -1) mainKeys.push(k);
+    if (exclude.indexOf(k) !== -1) continue;
+    if (keys.main.indexOf(k) === -1) keys.main.push(k);
   };
   // If there are no IDs, go to next
   if (dt.id === undefined) continue;
   // Loop over the ID keys and push if not already present
   for (let k in dt.id) {
-    if (idKeys.indexOf(k) === -1) idKeys.push(k);
+    if (keys.id.indexOf(k) === -1) keys.id.push(k);
   };
 };
 
 // Sort the keys arrays
-mainKeys.sort();
-idKeys.sort();
+for (let k in keys) keys[k].sort();
 
 // Loop over the data again
 for (let dt of data) {
@@ -42,11 +44,15 @@ for (let dt of data) {
     // Initialise IDs object
     obj.id = new Object();
     // Loop over the ID keys
-    for (let id of idKeys) {
+    for (let id of keys.id) {
       // If not present in the entry, go to next, otherwise assign
       if (dt.id[id] === undefined) continue;
       obj.id[id] = dt.id[id];
     };
+  };
+  // Assign data for the main keys, if present
+  for (let key of keys.main) {
+    if (dt[key] !== undefined) obj[key] = dt[key];
   };
   // Push to the results
   result.push(obj);
