@@ -1,4 +1,5 @@
 // Adding data as found in the JSON version of the HMDB data (collect01Hmdb.rb)
+// - Edited to avoid adding a new entry if SMILES code not found
 
 // Get the required data from the API
 let file = {
@@ -20,15 +21,8 @@ hmdb.forEach(dh => {
     if (dt.smiles === undefined || dt.smiles === null) return false;
     return dt.smiles === dh.smiles;
   });
-  // If no current entries, make a new one
-  if (tc.length === 0) {
-    let obj = new Object();
-    obj.smiles = dh.smiles;
-    obj.name = null;
-    for (let key in dh) obj[key] = dh[key];
-    data.table.push(obj);
-    return;
-  };
+  // If no current entries, DO NOT make a new one
+  if (tc.length === 0) return;
   // For each current entry, augment
   tc.forEach(t => augmentRow(t, dh));
 });
@@ -38,30 +32,6 @@ saveJsonString({
   name: "tableAdd02Hmdb.json",
   content: JSON.stringify(data.table, null, 2)
 });
-
-
-// Debug to confirm that all entries point to only one main HMDB ID:
-// > console.log(data.hmdb.filter(dh => dh.id_hmdb.length > 1));
-// >  => []
-// So all feature one and only one main HMDB ID.
-
-// They also all feature a unique SMILES code:
-// > data.hmdb.forEach((dh, i) => {
-// >   if (dh.smiles === null || dh.smiles === undefined) {
-// >     throw new Error(`SMILES not present for entry ${i}.`);
-// >   };
-// >   if (dh.smiles.length === 0) {
-// >     throw new Error(`SMILES not present for entry ${i}.`);
-// >   };
-// >   if (dh.smiles[0] === null) {
-// >     throw new Error(`SMILES not present for entry ${i}.`);
-// >   };
-// >   if (dh.smiles.length > 1) {
-// >     throw new Error(`More than one SMILES for entry ${i}.`);
-// >   };
-// > });
-// >  => <nothing>
-// Excellent!
 
 
 /** -- Function definitions -- **/
