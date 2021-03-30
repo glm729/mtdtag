@@ -1,7 +1,11 @@
+// Pull in the data from the API, and find the Twig sink
 let data = API.getData("filterTable").resurrect();
 let sink = document.querySelector("#view03");
 
+// Initialise the container table
 let container = divTable();
+
+// Reduce the data into the container
 container = data.reduce(
   function(acc, crt, i, arr) {
     acc = tableAddObj(acc, i.toString(), crt);
@@ -10,30 +14,35 @@ container = data.reduce(
   container
 );
 
+// Empty the sink and refill
 sink.innerHTML = '';
 sink.append(container);
 
 
 /** -- Function definitions -- **/
 
+// Helper to generate a div table
 function divTable() {
   let table = document.createElement("div");
   table.classList.add("div-table");
   return table;
 };
 
+// Helper to generate a div table row
 function divTableRow() {
   let row = document.createElement("div");
   row.classList.add("div-table-row");
   return row;
 };
 
+// Helper to generate a div table cell
 function divTableCell() {
   let cell = document.createElement("div");
   cell.classList.add("div-table-cell");
   return cell;
 };
 
+// Add a string value to a div table
 function tableAddString(table, title, value) {
   let row = divTableRow();
   let c0 = divTableCell();
@@ -47,6 +56,7 @@ function tableAddString(table, title, value) {
   return table;
 };
 
+// Add an array of strings to a div table
 function tableAddArray(table, title, values) {
   let r0 = divTableRow();
   let c0 = divTableCell();
@@ -71,6 +81,7 @@ function tableAddArray(table, title, values) {
   );
 };
 
+// Recursive "meta-function" to handle adding an Object of data to a table
 function tableAddObj(table, title, object) {
   let r0 = divTableRow();
   let c0 = divTableCell();
@@ -103,6 +114,7 @@ function tableAddObj(table, title, object) {
   return table;
 };
 
+// Helper to categorise data within tableAddObj
 function categorise(data) {
   if (typeof(data) === "string" || data === null) return 0;
   if (typeof(data) === "object") {
