@@ -28,27 +28,37 @@ function accordionAddObj(accordion, key, obj) {
   let button = makeAccordionButton(key);
   container.classList.add("accordion-content");
   for (let k in obj) {
-    if (typeof(obj[k]) === "string" || obj[k] === null) {
-      container = accordionAddString(container, k, obj[k]);
-      continue;
-    };
-    if (typeof(obj[k]) === "object") {
-      if (obj[k].length === undefined) {
+    switch (categorise(obj[k])) {
+      case 0:
+        container = accordionAddString(container, k, obj[k]);
+        break;
+      case 1:
         container = accordionAddObj(container, k, obj[k]);
-        continue;
-      };
-      if (obj[k].length === 1) {
+        break;
+      case 2:
         container = accordionAddString(container, k, obj[k][0]);
-        continue;
-      };
-      container = accordionAddArray(container, k, obj[k]);
-      continue;
+        break;
+      case 3:
+        container = accordionAddArray(container, k, obj[k]);
+        break;
+      default:
+        throw new Error("Unhandled datatype");
     };
-    throw new Error("Unhandled datatype");
   };
   accordion.append(button);
   accordion.append(container);
   return accordion;
+};
+
+// Switch-type function to categorise current data in accordionAddObj
+function categorise(data) {
+  if (typeof(data) === "string" || data === null) return 0;
+  if (typeof(data) === "object") {
+    if (data.length === undefined) return 1;
+    if (data.length === 1) return 2;
+    return 3;
+  };
+  throw new Error("Unhandled datatype");
 };
 
 // Add a string value (with title) to an accordion
