@@ -7,12 +7,37 @@
   }
   .div-table-row {
     display: table-row;
+    padding: 4px 0px;
   }
   .div-table-cell {
     display: table-cell;
+    padding-top: 2px;
+    padding-right: 4px;
+    padding-bottom: 2px;
   }
   .div-table-cell-header {
     font-weight: bold;
+  }
+  .div-table-cell > .div-table {
+    width: 100%;
+  }
+  .div-table-row > .div-table-cell:last-child {
+    padding-right: 0px;
+  }
+  .div-table > .div-table-row:nth-child(even) {
+    background-color: #efefef;
+  }
+  .div-table > .div-table-row:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  .div-table-major > .div-table-row:nth-child(even) {
+    background-color: #ffffff;
+  }
+  .div-table-major > .div-table-row:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  .div-table-major > .div-table-row > .div-table-cell > .div-table {
+    width: auto;
   }
 </style>
 

@@ -4,6 +4,7 @@ let sink = document.querySelector("#view03");
 
 // Initialise the container table
 let container = divTable();
+container.classList.add("div-table-major");
 
 // Reduce the data into the container
 container = data.reduce(
