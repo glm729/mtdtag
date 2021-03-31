@@ -33,7 +33,7 @@ function listAddString(list, title, value) {
   cellTitle.classList.add("list-cell-title");
   cellValue.classList.add("list-cell-value");
   cellTitle.innerHTML = title;
-  li.innerHTML = (value === null) ? '' : value;
+  li.innerHTML = (value === null) ? "&nbsp;" : value;
   ul.append(li);
   cellValue.append(ul);
   container.append(cellTitle);
