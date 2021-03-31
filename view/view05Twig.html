@@ -3,12 +3,18 @@
 
 <!-- CSS -->
 <style>
+#view05 {
+  font: 14px sans-serif;
+}
+
 /* Accordion styles */
 .accordion {
   display: block;
 }
 
 .accordion-button {
+  font: 14px sans-serif;  /* ChemInfo overwrites this, so need to force */
+  font-weight: bold;
   display: block;
   border: none;
   width: 100%;
@@ -34,17 +40,26 @@
 /* List styles */
 .list {
   list-style-type: none;
-  padding: 0px 18px;
+  padding-top: 0px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  padding-left: 18px;
   margin: 0px;
 }
 
 .list-cell-title {
   display: block;
   font-weight: bold;
+  background-color: #dfdfdf;
+  padding-top: 1px;
+  padding-right: 6px;
+  padding-bottom: 1px;
+  padding-left: 8px;
 }
 
 .list-cell-value {
   display: block;
+  background-color: #f7f7f7;
 }
 
 /* Pseudo-class and specific rules */
@@ -65,7 +80,7 @@
 }
 
 .accordion-major > div:not(:last-child) {
-  border-bottom: 1px solid #000000;
+  border-bottom: 2px solid #b3b3b3;
 }
 </style>
 
