@@ -44,11 +44,18 @@ the data, as required or was thought useful.
 
 ### View
 
-Viewing the data currently requires some rearrangement, as the table needs to
-be viewed in a flat format (due to the restrictions imposed by the Slick Grid
-renderer used in the ChemInfo view).  This may change in future, but currently
-there are some scripts used to rearrange and sort the data prior to using the
-new object to explore the data.
+Viewing all of the data at once currently requires some rearrangement, as the
+table needs to be viewed in a flat format (due to the restrictions imposed by
+the Slick Grid renderer used in the ChemInfo view).  This may change in future,
+but currently there are some scripts used to rearrange and sort the data prior
+to using the new object to explore the data.
+
+Recent additions have focused on viewing data found by filtering the data.
+Given a shortlist of entries in the table, HTML is generated to display the
+results of the filter, and to permit some interactive exploration.  A
+screenshot of example output of the current method (`view05`) is shown below.
+
+![Example output of view05](./exampleView05.png "Example output of view05")
 
 
 [1]: https://github.com/glm729/cheminfo_general/tree/master/convertPathbankCsv
