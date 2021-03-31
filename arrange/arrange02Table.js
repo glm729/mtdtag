@@ -47,6 +47,10 @@ for (let dt of data) {
     for (let id of keys.id) {
       // If not present in the entry, go to next, otherwise assign
       if (dt.id[id] === undefined) continue;
+      if (typeof(dt.id[id]) === "string") {
+        obj.id[id] = [dt.id[id]];
+        continue;
+      };
       obj.id[id] = dt.id[id];
     };
   };
