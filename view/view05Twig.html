@@ -1,0 +1,73 @@
+<!-- Twig template for view05 -->
+<!-- This file is greatly upsetting Vim for some reason -->
+
+<!-- CSS -->
+<style>
+/* Accordion styles */
+.accordion {
+  display: block;
+}
+
+.accordion-button {
+  display: block;
+  border: none;
+  width: 100%;
+  text-align: left;
+  background-color: #dfdfdf;
+  padding-left: 8px;
+}
+
+.accordion-button-show {
+  padding-left: 4px;
+  border-left: 4px solid #4169e1;
+}
+
+.accordion-content {
+  display: none;
+  background-color: #ffffff;
+}
+
+.accordion-content-show {
+  display: block;
+}
+
+/* List styles */
+.list {
+  list-style-type: none;
+  padding: 0px 18px;
+  margin: 0px;
+}
+
+.list-cell-title {
+  display: block;
+  font-weight: bold;
+}
+
+.list-cell-value {
+  display: block;
+}
+
+/* Pseudo-class and specific rules */
+.accordion-button:after {
+  content: "\025b8";
+  float: right;
+  margin-left: 6px;
+}
+
+.accordion-button:hover {
+  background-color: #cccccc;
+}
+
+.accordion-button-show:after {
+  content: "\025be";
+  float: right;
+  margin-left: 6px;
+}
+
+.accordion-major > div:not(:last-child) {
+  border-bottom: 1px solid #000000;
+}
+</style>
+
+<!-- Sink -->
+<div id="view05"></div>
