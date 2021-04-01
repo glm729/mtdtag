@@ -1,22 +1,32 @@
 // Combine view02 and view04
 
-// Retrieve the data from the API, and find the sink
+// Retrieve the data from the API
 let data = API.getData("filterTable").resurrect();
-let sink = document.querySelector("#view05");
 
-// Initialise the container and add classes
-let container = document.createElement("div");
-container.classList.add("accordion");
-container.classList.add("accordion-major");
+// Don't try to show the entire table.
+// Only need this because a blank query in the Smart Filter module returns the
+// entire array of data, which crashes the tab.
+if (API.getData("dataTable").length !== data.length) {
 
-// Reduce the data into the container
-container =
-  data.reduce((acc, crt, i, arr) => addObj(acc, i.toString(), crt), container);
+  // Find the sink
+  let sink = document.querySelector("#view05");
 
-// Empty and refill the sink
-sink.innerHTML = '';
-sink.append(container);
+  // Initialise the container and add classes
+  let container = document.createElement("div");
+  container.classList.add("accordion");
+  container.classList.add("accordion-major");
 
+  // Reduce the data into the container
+  container = data.reduce(
+    (acc, crt, i, arr) => addObj(acc, i.toString(), crt),
+    container
+  );
+
+  // Empty and refill the sink
+  sink.innerHTML = '';
+  sink.append(container);
+
+};
 
 /** -- Function definitions -- **/
 
@@ -28,14 +38,24 @@ function makeAccordionButton(ihtml) {
     else e.classList.add(t);
     return e;
   };
+  let container = document.createElement("div");
+  let signal = document.createElement("div");
   let button = document.createElement("button");
-  button.innerHTML = (ihtml === undefined) ? '' : ihtml;
+  container.classList.add("accordion-button-container");
+  signal.classList.add("accordion-button-signal");
   button.classList.add("accordion-button");
+  signal.innerHTML = "&nbsp;";
+  button.innerHTML = (ihtml === undefined) ? '' : ihtml;
   button.onclick = function() {
+    let signal = this.previousElementSibling;
+    let content = this.parentElement.nextElementSibling;
     alterAccordionClass(this, "button");
-    alterAccordionClass(this.nextElementSibling, "content");
+    alterAccordionClass(signal, "button-signal");
+    alterAccordionClass(content, "content");
   };
-  return button;
+  container.append(signal);
+  container.append(button);
+  return container;
 };
 
 // Add a string value to a list

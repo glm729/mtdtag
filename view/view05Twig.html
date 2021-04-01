@@ -13,24 +13,35 @@
 }
 
 .accordion-button {
+  background-color: inherit;
+  border: none;
+  border-left: 0px solid #4169e1;
+  display: inline-block;
+  flex-grow: 1;
   font: 14px sans-serif;  /* ChemInfo overwrites this, so need to force */
   font-weight: bold;
-  display: block;
-  border: none;
-  width: 100%;
+  padding-left: 4px;
   text-align: left;
-  background-color: #dfdfdf;
-  padding-left: 8px;
 }
 
-.accordion-button-show {
-  padding-left: 4px;
-  border-left: 4px solid #4169e1;
+.accordion-button-container {
+  background-color: #dfdfdf;
+  display: flex;
+}
+
+.accordion-button-signal {
+  background-color: inherit;
+  display: inline-block;
+  width: 4px;
+}
+
+.accordion-button-signal-show {
+  background-color: #4169e1;
 }
 
 .accordion-content {
-  display: none;
   background-color: #ffffff;
+  display: none;
 }
 
 .accordion-content-show {
@@ -40,17 +51,17 @@
 /* List styles */
 .list {
   list-style-type: none;
+  margin: 0px;
   padding-top: 0px;
   padding-right: 0px;
   padding-bottom: 0px;
   padding-left: 18px;
-  margin: 0px;
 }
 
 .list-cell-title {
+  background-color: #dfdfdf;
   display: block;
   font-weight: bold;
-  background-color: #dfdfdf;
   padding-top: 1px;
   padding-right: 6px;
   padding-bottom: 1px;
@@ -58,8 +69,8 @@
 }
 
 .list-cell-value {
-  display: block;
   background-color: #f7f7f7;
+  display: block;
 }
 
 /* Pseudo-class and specific rules */
@@ -69,7 +80,7 @@
   margin-left: 6px;
 }
 
-.accordion-button:hover {
+.accordion-button-container:hover {
   background-color: #cccccc;
 }
 
@@ -79,7 +90,7 @@
   margin-left: 6px;
 }
 
-.accordion-major > div:not(:last-child) {
+.accordion-major > .accordion-content:not(:last-child) {
   border-bottom: 2px solid #b3b3b3;
 }
 </style>
