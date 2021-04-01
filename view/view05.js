@@ -28,6 +28,7 @@ if (API.getData("dataTable").length !== data.length) {
 
 };
 
+
 /** -- Function definitions -- **/
 
 // Helper function to make an accordion title button
