@@ -1,0 +1,106 @@
+<!-- Twig template for view06 -->
+<!-- This file is greatly upsetting Vim for some reason -->
+
+<!-- CSS -->
+<style>
+#view06 {
+  font: 14px sans-serif;
+}
+
+/* Accordion styles */
+.accordion {
+  display: block;
+}
+
+.accordion-button {
+  background-color: inherit;
+  border: none;
+  display: inline-block;
+  flex-grow: 1;
+  font: 14px sans-serif;  /* ChemInfo overwrites this, so need to force */
+  font-weight: bold;
+  padding-left: 4px;
+  text-align: left;
+}
+
+.accordion-button-container {
+  background-color: #dfdfdf;
+  display: flex;
+  transition: background-color 0.2s ease-out;
+}
+
+.accordion-button-signal {
+  background-color: transparent;
+  display: inline-block;
+  transition: background-color 0.2s ease-out;
+  width: 6px;
+}
+
+.accordion-button-signal-show {
+  background-color: #4169e1;
+}
+
+.accordion-content {
+  background-color: #ffffff;
+  display: none;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.accordion-content-show {
+  display: block;
+}
+
+.accordion-major {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* List styles */
+.list {
+  list-style-type: none;
+  margin: 0px;
+  padding-top: 0px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  padding-left: 18px;
+}
+
+.list-cell-title {
+  background-color: #dfdfdf;
+  display: block;
+  font-weight: bold;
+  padding-top: 1px;
+  padding-right: 6px;
+  padding-bottom: 1px;
+  padding-left: 10px;
+}
+
+.list-cell-value {
+  background-color: #f7f7f7;
+}
+
+/* Pseudo-class and specific rules */
+.accordion-button:after {
+  content: "\025b8";
+  float: right;
+  margin-left: 6px;
+}
+
+.accordion-button-container:hover {
+  background-color: #cccccc;
+}
+
+.accordion-button-show:after {
+  content: "\025be";
+  float: right;
+  margin-left: 6px;
+}
+
+.accordion-major > .accordion-content:not(:last-child) {
+  border-bottom: 2px solid #b3b3b3;
+}
+</style>
+
+<!-- Sink -->
+<div id="view06"></div>
