@@ -15,7 +15,6 @@
 .accordion-button {
   background-color: inherit;
   border: none;
-  border-left: 0px solid #4169e1;
   display: inline-block;
   flex-grow: 1;
   font: 14px sans-serif;  /* ChemInfo overwrites this, so need to force */
@@ -27,12 +26,14 @@
 .accordion-button-container {
   background-color: #dfdfdf;
   display: flex;
+  transition: background-color 0.2s ease-out;
 }
 
 .accordion-button-signal {
-  background-color: inherit;
+  background-color: transparent;
   display: inline-block;
-  width: 4px;
+  transition: background-color 0.2s ease-out;
+  width: 6px;
 }
 
 .accordion-button-signal-show {
