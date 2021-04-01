@@ -32,7 +32,8 @@ function dataMapCallback(dp) {
     hmdb: m["HMDB ID"],
     inchi: m["InChI"],
     inchikey: m["InChI Key"],
-    kegg: m["KEGG ID"]
+    kegg: m["KEGG ID"],
+    pathbank: m["Metabolite ID"],
   };
   // For each key in the ID group
   for (let k in idg) {
