@@ -129,8 +129,8 @@ path = {
     :table => "../data/dataArrange02Table.json"
   },
   :out => {
-    :log => "../data/logRequest00SmilesToSdf.txt",
-    :out => "../data/outRequest00SmilesToSdf.sdf"
+    :log => "../data/logRequest01SmilesToSdf.txt",
+    :out => "../data/outRequest01SmilesToSdf.sdf"
   }
 }
 
