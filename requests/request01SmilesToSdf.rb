@@ -33,15 +33,14 @@ end
 def processEntries(data)
   # Initialise output hash and kick if no data
   out = {:log => initLog(data), :data => String.new()}
-  return out if data[:data].length === 0
-  # Loop over the data
+  # Loop over the data, if any
   data[:data].each_with_index do |dat, i|
     # Boot if frowns
     if dat["smiles"].nil?
-      out[:log] += "  No SMILES code for entry #{i + 1}.\n"
+      out[:log] += "  No SMILES code for entry #{i + 1}\n"
       next
     end
-    # Get the desired OpenBabel output
+    # Get OpenBabel output
     out[:data] += obabelOutput(data[:names].join("; "), dat["smiles"])
   end
   return out
@@ -49,7 +48,7 @@ end
 
 # Get required output from OpenBabel conversion operation
 def obabelOutput(name, smiles)
-  insert = %Q_>  <id>\n#{smiles}\n\n>  <Name>\n#{name}\n\n$$$$\n_
+  insert = %Q_>  <id>\n#{smiles}\n\n>  <Name>\n#{name}\n\n$$$$_
   response = %x_obabel -:"#{smiles}" -osdf --gen2D_.rstrip.split(/\n/)
   response[-1] = insert
   return response.join("\n")
@@ -67,7 +66,7 @@ path = {
   },
   :out => {
     :log => "../data/logRequest01SmilesToSdf.txt",
-    :out => "../data/outRequest01SmilesToSdf.sdf"
+    :data => "../data/outRequest01SmilesToSdf.sdf"
   }
 }
 
@@ -86,21 +85,15 @@ table.each do |ent|
 end
 
 # Initialise the output files
-file = {:log => String.new(), :out => String.new()}
+file = {:log => Array.new(), :data => Array.new()}
 
-# For each entry in the results, process and push results out
-result.each do |res|
-  process = processEntries(res)
-  file[:log] += "#{process[:log]}\n"
-  file[:out] += process[:data]
-end
-
-# Clean trailing newline in the log file
-file[:log] = "#{file[:log].rstrip}\n"
+# For each entry in the results, process and append results
+result.each{|res| processEntries(res).each{|k, v| file[k] << v}}
 
 # Write out
-File.open(path[:out][:log], :mode => "w"){|f| f.write(file[:log])}
-File.open(path[:out][:out], :mode => "w"){|f| f.write(file[:out])}
+path[:out].each do |k, v|
+  File.open(v, :mode => "w"){|f| f.write(file[k].join("\n"))}
+end
 
 # Operations complete
 exit 0
