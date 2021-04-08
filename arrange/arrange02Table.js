@@ -36,7 +36,9 @@ for (let dt of data) {
   // Create a new object and assign the desired data
   let obj = new Object();
   obj.smiles = dt.smiles;
-  obj.molecular_formula = dt.molecular_formula;
+  if (dt.molecular_formula !== undefined) {
+    obj.molecular_formula = dt.molecular_formula.slice().sort();
+  };
   obj.name = dt.name;
   // Sort aliases (if any)
   if (dt.alias !== undefined) obj.alias = dt.alias.slice().sort();
