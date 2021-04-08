@@ -5,7 +5,7 @@ let file = API.getData("fileTable").resurrect();
 let data = JSON.parse(file.replace(/\s+$/, ''));
 
 // Initialise variables
-let exclude = ["smiles", "name", "alias", "id"];
+let exclude = ["smiles", "molecular_formula", "name", "alias", "id"];
 let result = new Array();
 let keys = {
   id: new Array(),
@@ -36,6 +36,7 @@ for (let dt of data) {
   // Create a new object and assign the desired data
   let obj = new Object();
   obj.smiles = dt.smiles;
+  obj.molecular_formula = dt.molecular_formula;
   obj.name = dt.name;
   // Sort aliases (if any)
   if (dt.alias !== undefined) obj.alias = dt.alias.slice().sort();

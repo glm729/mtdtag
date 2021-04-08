@@ -81,6 +81,7 @@ function keggToTable(kegg) {
   let result = new Array();
   kegg.forEach(kg => {
     let obj = new Object();
+    if (kg.formula !== undefined) obj.molecular_formula = kg.formula;
     obj.alias = kg.name;
     obj.id = kcDblinks(kg);
     obj.id.kegg = kg.entry.id;

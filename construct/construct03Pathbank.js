@@ -49,6 +49,7 @@ function dataMapCallback(dp) {
   } else {
     mn.forEach(n => op.alias.push(n));
   };
+  op.molecular_formula = (m["Formula"] === undefined) ? [] : [m["Formula"]]
   return op;
 };
 
