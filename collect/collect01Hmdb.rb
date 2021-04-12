@@ -5,8 +5,8 @@
 # -----------------------------------------------------------------------------
 
 
-require("nokogiri")
-require("json")
+require "nokogiri"
+require "json"
 
 
 # Function definitions
@@ -16,26 +16,19 @@ require("json")
 # Read the file contents and parse as XML
 def parseXml(path)
   file = File.read(path).gsub(/\s+$/, '')
-  return(Nokogiri::XML(file).remove_namespaces!)
+  return Nokogiri::XML(file).remove_namespaces!
 end
 
 # Collect all XML data of interest, according to spec xpathSet
 def getXmlData(xml, xpathSet)
-  output = Hash.new()
+  output = Hash.new
   xpathSet.each do |key, xp|
     data = xml.xpath(xp)
-    if data.empty?
-      output[key] = [nil]
-      next
-    end
-    text = data.map(&:text).reject{|e| e == ''}
-    if text.length == 0
-      output[key] = [nil]
-      next
-    end
+    text = data.map(&:text).reject(&:empty?)
+    next if text.length === 0
     output[key] = text
   end
-  return(output)
+  return output
 end
 
 
@@ -44,23 +37,15 @@ end
 
 
 # Set variables
-dir = "../data/hmdb_all_split/"
+dir = File.read("../data/hmdb_data_store.txt").rstrip
 fileOut = "../data/hmdbDataExtracted.json"
-
-# jsonOpt = {
-#   :array_nl => "\n",
-#   :object_nl => "\n",
-#   :indent => "  ",
-#   :space => " "
-# }
-# ^ Decided to minimise filesize, so keeping JSON condensed
 
 # Get the directory entries and get the referenced IDs
 dirEntries = Dir.entries(dir).reject{|e| e.match?(/^\.\.?$/)}
 idHmdb = dirEntries.map{|e| e.match(/^(?<id>HMDB\d+)(?=\.xml$)/)[:id]}.sort
 
 # Initialise results array
-result = Array.new()
+result = Array.new
 
 # Shorthand for common prefix
 pf = "//metabolite"
@@ -84,12 +69,13 @@ xpathSet = {
 # For each HMDB ID:  parse the XML, collect the data, push to the results
 idHmdb.each do |id|
   xml = parseXml(%Q[#{dir}#{id}.xml])
-  data = getXmlData(xml, xpathSet)
-  result << data
+  result << getXmlData(xml, xpathSet)
 end
 
 # Write out
-File.open(fileOut, :mode => "w"){|f| f.write(JSON.generate(result))}
+File.open(fileOut, :mode => "w") do |file|
+  file.write("#{JSON.pretty_generate(result)}\n")
+end
 
 # Finished
-exit(0)
+exit 0
