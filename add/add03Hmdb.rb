@@ -57,10 +57,12 @@ hmdb = read_json(path[:in][:hmdb])
 # Loop over the HMDB data
 hmdb.each do |dh|
   # Subset the table, and skip if no matching SMILES
-  subset = table.filter{|t| dh["smiles"].any?(t["smiles"])}
+  subset = table.filter{|t| dh["smiles"] === t["smiles"]}
   next if subset.length === 0
   # Loop over the subset and add to the aliases and DB IDs
+  # Edited to overwrite the (previously nil) name attribute
   subset.each do |sub|
+    sub["name"] = dh["name"]
     sub["alias"] = add_data_array(sub["alias"], dh["alias"])
     sub["id"] = add_data_ids(sub["id"], dh["id"])
   end
