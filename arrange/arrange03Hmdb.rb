@@ -12,7 +12,15 @@ require "json"
 
 def arrange_id(entry)
   entry_out = Hash.new
-  entry.keys.each do |key|
+  exclude_keys = ["smiles", "name"]
+  loop_keys = entry.keys.reject{|k| exclude_keys.any?(k)}
+  exclude_keys.each do |key|
+    if entry[key].length > 1
+      raise RuntimeError, "Too many of datum #{key} for entry"
+    end
+    entry_out[key] = entry[key][0]
+  end
+  loop_keys.each do |key|
     if key.to_s.match?(/^id_/)
       entry_out["id"] = Hash.new if entry_out["id"].nil?
       key_new = key.to_s.match(/^id_(?<db>.+)/)[:db]
