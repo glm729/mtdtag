@@ -1,15 +1,19 @@
 /** -- Operations -- **/
 
+// Get the table data and parse as JSON
 let table = API.getData("fileTable").resurrect();
 let parsed = JSON.parse(table.trimEnd());
 
-let shortlist = parsed.filter(p => filterTable(p));
+// Shortlist the table
+let shortlist = parsed.filter(filterTable);
 
+// Reduce the shortlist into IDs to request and those with too many PC IDs
 let data = shortlist.reduce(
   reduceShortlist,
   {req: new Array(), tmi: new Array()}
 );
 
+// If any with too many PC IDs, save them in a separate file
 if (data.tmi.length) {
   let l = data.tmi.length;
   let s = (l === 1) ? "y" : "ies";
@@ -21,8 +25,10 @@ if (data.tmi.length) {
   saveJsonButton(fsTmi, "#sinkCollect04");
 };
 
+// Sort the IDs to request
 data.req.sort()
 
+// Operate
 requestData(data.req).then(d => {
   console.log("%cSaving data", "color: dodgerblue");
   let fsFinal = {
@@ -35,10 +41,12 @@ requestData(data.req).then(d => {
 
 /** -- Function definitions -- **/
 
+// Produce the PubChem PUG REST URI for the Compound DB
 function pcCompoundUri(id) {
   return `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${id}/json`;
 };
 
+// Spread out the promises over time, by forcing an await of (index * 200ms)
 function distributePromises(array) {
   return array.map(async (x, i) => {
     await new Promise(r => setTimeout(r, i * 200));  // 200ms between requests
@@ -48,14 +56,20 @@ function distributePromises(array) {
   })
 };
 
+// Abstracted function to filter the parsed table to the target entries
 function filterTable(entry) {
+  // Must frown
   if (entry.smiles !== null) return false;
+  // Needs identification
   if (entry.id === null || entry.id === undefined) return false;
+  // Should have a computer
   let eip = entry.id.pubchem;
   if (eip === null || eip === undefined) return false;
+  // Survived the chop
   return true;
 };
 
+// Abstracted reducer for the shortlist
 function reduceShortlist(acc, crt) {
   if (crt.id.pubchem.length > 1) {
     acc.tmi.push(crt);
@@ -65,6 +79,7 @@ function reduceShortlist(acc, crt) {
   return acc;
 };
 
+// Helper function to create a button to save a JSON
 function saveJsonButton(fileSpec, selector) {
   let parent = document.querySelector(selector);
   let a = document.createElement("a");
@@ -81,6 +96,8 @@ function saveJsonButton(fileSpec, selector) {
   return;
 };
 
+// Function for picking random elements of an array
+// (which appears to be unused, currently, but I was using it for testing)
 function randomElements(arr, len) {
   let num = new Array();
   for (let i = 0; i < len; ++i) {
@@ -92,6 +109,9 @@ function randomElements(arr, len) {
   return num.map(n => arr[n]);
 };
 
+// Main operative function -- Request data and loop back if some still to get,
+// i.e. if it was a server overload rather than missing data or an unknown
+// error (uses while loop)
 async function requestData(ids) {
   let pn = 0;
   let store = {
@@ -134,6 +154,7 @@ async function requestData(ids) {
   return store;
 };
 
+// Helper function to classify data returned from a PUG REST JSON query
 function classifyPugrestReturn(data) {
   if (data.PC_Compounds !== undefined) return 0;
   if (data.Fault !== undefined) {
