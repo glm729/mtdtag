@@ -21,7 +21,7 @@ for (let dt of data) {
     if (keys.main.indexOf(k) === -1) keys.main.push(k);
   };
   // If there are no IDs, go to next
-  if (dt.id === undefined) continue;
+  if (dt.id === undefined || dt.id === null) continue;
   // Loop over the ID keys and push if not already present
   for (let k in dt.id) {
     if (keys.id.indexOf(k) === -1) keys.id.push(k);
@@ -36,20 +36,22 @@ for (let dt of data) {
   // Create a new object and assign the desired data
   let obj = new Object();
   obj.smiles = dt.smiles;
-  if (dt.molecular_formula !== undefined) {
+  if (dt.molecular_formula !== undefined && dt.molecular_formula !== null) {
     obj.molecular_formula = dt.molecular_formula.slice().sort();
   };
   obj.name = dt.name;
   // Sort aliases (if any)
-  if (dt.alias !== undefined) obj.alias = dt.alias.slice().sort();
+  if (dt.alias !== undefined && dt.alias !== null) {
+    obj.alias = dt.alias.slice().sort();
+  };
   // If there are any IDs
-  if (dt.id !== undefined) {
+  if (dt.id !== undefined && dt.id !== null) {
     // Initialise IDs object
     obj.id = new Object();
     // Loop over the ID keys
     for (let id of keys.id) {
       // If not present in the entry, go to next, otherwise assign
-      if (dt.id[id] === undefined) continue;
+      if (dt.id[id] === undefined || dt.id[id] === null) continue;
       if (typeof(dt.id[id]) === "string") {
         obj.id[id] = [dt.id[id]];
         continue;
@@ -59,7 +61,7 @@ for (let dt of data) {
   };
   // Assign data for the main keys, if present
   for (let key of keys.main) {
-    if (dt[key] !== undefined) obj[key] = dt[key];
+    if (dt[key] !== undefined && dt[key] !== null) obj[key] = dt[key];
   };
   // Push to the results
   result.push(obj);
