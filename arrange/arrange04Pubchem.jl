@@ -15,13 +15,19 @@ function read_json(path::String)
   return JSON.parse(join(readlines(path), "\n"))
 end
 
-# Helper to return a canonical SMILES code, or nothing
-function get_canonical_smiles(props)
-  local subset = filter(
-    p -> p["urn"]["label"] === "SMILES" && p["urn"]["name"] === "Canonical",
-    props
+# Helper to return SMILES codes, or nothing
+function get_smiles(props)
+  local subset = filter(p -> p["urn"]["label"] === "SMILES", props)
+  if length(subset) === 0
+    return nothing
+  end
+  return map(
+    s -> Dict{String,String}(
+      "smiles" => s["value"]["sval"],
+      "type" => lowercase(s["urn"]["name"])
+    ),
+    subset
   )
-  return length(subset) !== 1 ? nothing : subset[1]["value"]["sval"]
 end
 
 # Helper to get props data for the (k, v) pair in the target info
@@ -40,7 +46,7 @@ function sift_data(d, info)
   local props = d["props"]
   local pcid = [string(d["id"]["id"]["cid"])]
   # Set the SMILES code and the PubChem ID
-  out["smiles"] = get_canonical_smiles(props)
+  out["smiles"] = get_smiles(props)
   out["id"] = Dict{String,Array{String,1}}("pubchem" => pcid)
   # Loop over the info key-value pairs
   for (k, v) in info[:main]
