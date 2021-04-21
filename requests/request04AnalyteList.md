@@ -170,6 +170,6 @@ end
 ```
 
 
-[1]:https://github.com/glm729/splitHmdbXml/blob/master/splitHmdbXmlMetabolitesAll.rb
+[1]:https://github.com/glm729/splitHmdbXml
 [2]:https://github.com/glm729/mtdtag/blob/master/collect/collect00Hmdb.rb
 [3]:https://github.com/JuliaIO/EzXML.jl
