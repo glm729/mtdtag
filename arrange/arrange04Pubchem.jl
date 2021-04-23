@@ -11,8 +11,8 @@ using JSON
 # -----------------------------------------------------------------------------
 
 # Helper to read and parse a JSON
-function read_json(path::String)
-  return JSON.parse(join(readlines(path), "\n"))
+function read_json(path::String)::Array{Any,1}
+  return JSON.parse(read(path, String))
 end
 
 # Helper to return SMILES codes, or nothing
