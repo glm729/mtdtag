@@ -51,7 +51,7 @@ println("\e[34mAssigning common variables\e[0m")
 
 # Paths in and out
 path = Dict{Symbol,Dict{Symbol,String}}(
-  :in => Dict{Symbol,String}(:dir => "../../hmdb/data/hmdb_all_split/"),
+  :in => Dict{Symbol,String}(:dir => "../../hmdb_data/all_split/"),
   :out => Dict{Symbol,String}(:out => "../data/outRequest04AnalyteList.tsv"),
 )
 
