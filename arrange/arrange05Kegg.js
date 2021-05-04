@@ -6,7 +6,7 @@
 
 let path = {
   in: "../data/outCollect05Kegg.txt",
-  out: "../data/outArrange06Kegg.json"
+  out: "../data/outArrange05Kegg.json"
 };
 
 const fs = require("fs");
@@ -23,7 +23,7 @@ fs.readFile(path.in, "utf8", (e, d) => {
       console.error(e);
       return;
     };
-    console.log("File written successfully");
+    console.log(`File written:  ${path.out}`);
   });
   return data;
 });
