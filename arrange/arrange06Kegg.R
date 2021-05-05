@@ -38,8 +38,8 @@ get_lr <- function(sp) {
 
 # Define paths
 path <- list(
-  ip = "./data/outArrange05Kegg.json",
-  op = "./data/out_kegg_reactions.json"
+  ip = "../data/outArrange05Kegg.json",
+  op = "../data/outArrange06Kegg.json"
 )
 
 # Read the data
