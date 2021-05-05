@@ -14,8 +14,8 @@ using EzXML
 # -----------------------------------------------------------------------------
 
 # Core function for collecting XML data per the input spec
-function collect_data(root, spec)
-  local ns = namespace(root)
+function collect_data(root::EzXML.Node, spec)::Dict{String,Any}
+  local ns::String = namespace(root)
   local obj = Dict{String,Any}()
   for s in spec
     f = findall(s.xpath, root, ["x" => ns])  # Hardcoded as x!
@@ -34,7 +34,11 @@ function collect_data(root, spec)
 end
 
 # Abstracted reducer function to collapse the data into a TSV string array
-function reduce_data_tsv(acc, crt, headers)
+function reduce_data_tsv(
+    acc::Array{String,1},
+    crt::Dict{String,Any},
+    headers::Array{String,1}
+  )::Array{String,1}
   local out = Array{String,1}()
   for h in headers
     push!(out, get(crt, h, ""))
@@ -50,9 +54,9 @@ end
 println("\e[34mAssigning common variables\e[0m")
 
 # Paths in and out
-path = Dict{Symbol,Dict{Symbol,String}}(
-  :in => Dict{Symbol,String}(:dir => "../../hmdb_data/all_split/"),
-  :out => Dict{Symbol,String}(:out => "../data/outRequest04AnalyteList.tsv"),
+path = (
+  ip_dir = "../../hmdb/data/hmdb_metabolites",
+  op = "../data/outRequest04AnalyteList.tsv"
 )
 
 # Headers for the output TSV
@@ -93,8 +97,8 @@ println("\e[36mCollecting data\e[0m")
 
 # Get it all
 data = map(
-  f -> collect_data(root(readxml("$(path[:in][:dir])/$f")), spec),
-  readdir(path[:in][:dir])
+  f -> collect_data(root(readxml("$(path.ip_dir)/$f")), spec),
+  readdir(path.ip_dir)
 )
 
 # That wasn't too bad
@@ -108,10 +112,10 @@ out = reduce(
 )
 
 # Send it here
-println("\e[32mWriting file:  $(path[:out][:out])\e[0m")
+println("\e[32mWriting file:  $(path.op)\e[0m")
 
 # Scribble
-open(path[:out][:out], "w") do file
+open(path.op, "w") do file
   write(file, "$(join(out, "\n"))\n")
 end
 
