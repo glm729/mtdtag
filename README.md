@@ -1,6 +1,6 @@
 # Metabolite Data Aggregator
 #### Mr. George L. Malone
-#### 29<sup>th</sup> of March, 2021
+#### 6<sup>th</sup> of May, 2021
 
 
 ### Overview
@@ -19,9 +19,10 @@ and the output from the [KEGG REST API][2] operation `/list/compound`.
 ### Add
 
 Additional data were gathered from KEGG Compound data, which were collected
-given the IDs provided in the KEGG List Compound operation.  Recently,
-additional data were collected from HMDB and added to the entries that were
-found to have matching SMILES codes.
+given the IDs provided in the KEGG List Compound operation.  Further data were
+collected from HMDB and added to the entries that were found to have matching
+SMILES codes.  Recently, KEGG Reaction, Module, and Pathway data have been
+collected to enable visualising KEGG Pathways and Modules.
 
 
 ### Collect
@@ -29,9 +30,11 @@ found to have matching SMILES codes.
 Additional data, such as KEGG and HMDB data, were collected as reference data
 and to add to the table.  This requires a mix of JavaScript and Ruby for the
 HMDB data -- all HMDB data initially came from the _All Metabolites_ XML
-provided [at the HMDB Downloads page][3], which, using Ruby, was broken into
+provided at [the HMDB Downloads page][3], which, using Ruby, was broken into
 its component (singular accession) XML files, which were then converted into a
-JSON given a selection of (DOM) nodes of interest.
+JSON given a selection of (DOM) nodes of interest.  These operations were then
+converted to Julia, which gave a massive performance increase.  The operations
+for splitting the large XML are also documented [here][4].
 
 
 ### Arrange
@@ -50,14 +53,15 @@ the Slick Grid renderer used in the ChemInfo view).  This may change in future,
 but currently there are some scripts used to rearrange and sort the data prior
 to using the new object to explore the data.
 
-Recent additions have focused on viewing data found by filtering the data.
-Given a shortlist of entries in the table, HTML is generated to display the
-results of the filter, and to permit some interactive exploration.  A
-screenshot of example output of the current method (`view05`) is shown below.
+Some additions have focused on viewing data found by filtering the data.  Given
+a shortlist of entries in the table, HTML is generated to display the results
+of the filter, and to permit some interactive exploration.  A screenshot of
+example output of the method `view05` is shown below.
 
 ![Example output of view05](./exampleView05.png "Example output of view05")
 
 
-[1]: https://github.com/glm729/cheminfo_general/tree/master/convertPathbankCsv
-[2]: https://www.kegg.jp/kegg/rest/keggapi.html
-[3]: https://hmdb.ca/downloads
+[1]:https://github.com/glm729/cheminfo_general/tree/master/convertPathbankCsv
+[2]:https://www.kegg.jp/kegg/rest/keggapi.html
+[3]:https://hmdb.ca/downloads
+[4]:https://github.com/glm729/splitHmdbXml
