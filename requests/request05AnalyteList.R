@@ -15,7 +15,7 @@ data.m <- data.r[2:length(data.r)]
 length <- ceiling(length(data.m) / 3)
 
 # Get the indices per segment
-idx <- lapply(0:2, function(i) (1 + (length * i)):(length + (length * i)))
+idx <- lapply(0:2, function(i) (1 + (length * i)):(length * (1 + i)))
 
 # If the final group is too long, truncate
 if (max(idx[[length(idx)]]) > length(data.m)) {
