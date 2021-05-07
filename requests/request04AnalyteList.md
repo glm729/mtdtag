@@ -112,6 +112,7 @@ headers_tsv = [
   "Formula",
   "Name",
   "CCS [M+H]+",
+  "CCS [M+Na]+",
   "CCS [M-H]-",
   "KEGG",
   "CAS",
@@ -120,6 +121,7 @@ headers_tsv = [
   "HMDB",
   "BioCyc",
   "Metlin",
+  "LipidMaps",
   "UserID",
   "InChI"
 ]
