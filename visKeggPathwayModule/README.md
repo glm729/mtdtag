@@ -1,6 +1,10 @@
 # Visualise KEGG Pathway or Module
 #### Mr. George L. Malone
-#### 6<sup>th</sup> of May, 2021
+#### 10<sup>th</sup> of May, 2021
+
+
+Work on the contents of this directory has been moved to [its own
+repository][0].
 
 
 ## Overview
@@ -30,17 +34,21 @@ reaction.
 
 ## Operations
 
-The user enters an ID into a text input and clicks a button to submit the
-string.  The string is tested for suitable patterns, and, if suitable, is sent
-to the cell to run either the pathway or module visualisation, depending on the
-format of the ID.  The attempt to run the simulation stops with an error if
-there is no matching ID found in the data.  Otherwise, the data are queried to
-discover the appropriate reaction IDs, and the nodes and links arrays are
-generated, then created in the API.  The function to run the simulation then
-receives the data, clears the previous SVG (if any), and starts the new
-simulation.
+On loading the page, the attached data are loaded and the data objects are
+created in the API.  The chart (simulation SVG) is then initialised and
+attached to the current window, such that it can be accessed from different
+ChemInfo cells and updated as necessary.  The user then enters an ID into a
+text input and clicks a button to submit the string.  The string is tested for
+suitable patterns, and, if suitable, is sent to the cell to run either the
+pathway or module visualisation, depending on the format of the ID.  The
+attempt to update the simulation stops with an error if there is no matching ID
+found in the data.  Otherwise, the data are queried to discover the appropriate
+reaction IDs, and the nodes and links arrays are generated, then created in the
+API.  The cell to update the simulation then receives the data, and runs the
+update function.
 
 
+[0]:https://github.com/glm729/d3visKegg
 [1]:https://github.com/glm729/mtdtag/blob/master/collect/collect05Kegg.rb
 [2]:https://github.com/glm729/mtdtag/blob/master/collect/collect06Kegg.rb
 [3]:https://github.com/glm729/mtdtag/blob/master/arrange/arrange06Kegg.R
