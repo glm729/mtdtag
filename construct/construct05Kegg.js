@@ -32,9 +32,18 @@ function prepareOutput(data, keySpec) {
   let tableString = data.reduce(
     (a, c) => reduceToTable(a, c, keySpec),
     `${Object.keys(keySpec).join("\t")}\n`);
+  // Create table JSON (use proper keys)
+  let tableJson = data.map(d => {
+    let ndata = new Object()
+    for (let k in keySpec) {
+      if (d[keySpec[k]] == null) continue;
+      ndata[k] = d[keySpec[k]];
+    };
+    return ndata;
+  });
   // Initialise output object (decided not to use getters)
   let op = {
-    klc: {string: `${JSON.stringify(data, null, 2)}\n`},
+    klc: {string: `${JSON.stringify(tableJson, null, 2)}\n`},
     table: {string: tableString}
   };
   // Make the blobs
