@@ -56,12 +56,12 @@ function prepareOutput(data, keySpec) {
   // Prepare the file details
   op.klc.file = {
     blob: op.klc.blob,
-    filename: "outCollect09Kegg.json",
+    filename: "outConstruct05Kegg.json",
     buttonText: "Download KLC JSON"
   };
   op.table.file = {
     blob: op.table.blob,
-    filename: "outCollect09Kegg.tsv",
+    filename: "outConstruct05Kegg.tsv",
     buttonText: "Download KLC TSV"
   };
   // All done here
