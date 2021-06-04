@@ -51,6 +51,18 @@ def get_table_data(kegg_entry, keys):
     return ndata
 
 
+# Generate a tab-delimited file according to specified headers
+def generate_tsv(data, headers):
+    ndata = "{0}\n".format("\t".join(headers))
+    for d in data:
+        row = list()
+        for h in headers:
+            t = d.get(h, str())
+            row.append("|".join(t) if isinstance(t, list) else t)
+        ndata += "{0}\n".format("\t".join(row))
+    return ndata
+
+
 # Helper to print a formatted message in the console
 def msg(ty, tx):
     f = {
@@ -70,7 +82,10 @@ def msg(ty, tx):
 # Define file paths
 path = {
     "in": "../_data/outCollect09Kegg.json",
-    "out": "../_data/outConstruct06Kegg.json"
+    "out": {
+        "json": "../_data/outConstruct06Kegg.json",
+        "tsv": "../_data/outConstruct06Kegg.tsv"
+    }
 }
 
 # Define key mapping between table and KEGG data
@@ -96,9 +111,14 @@ with mp.Pool(14) as worker_pool:
     func = ft.partial(get_table_data, keys=keys)
     result = worker_pool.map(func, kegg)
 
-# Write the output JSON
-msg("info", "Writing output file")
-with open(path["out"], "w") as file:
+# Write the output files:
+msg("info", "Writing output files")
+# - JSON
+with open(path["out"]["json"], "w") as file:
     file.write(f'{json.dumps(result, indent=2)}\n')
+# - TSV
+with open(path["out"]["tsv"], "w") as file:
+    file.write(generate_tsv(result, list(keys.keys())))
 
+# Finito
 msg("ok", "End of operations")
