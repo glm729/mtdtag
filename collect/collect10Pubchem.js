@@ -18,7 +18,7 @@ let pcOnly = kegg.reduce(
 // Request the PubChem data
 let requests = pcOnly.map(
   async (kegg, idx) => {
-    await new Promise(_ => setTimeout(_, idx * 200));
+    await new Promise(_ => setTimeout(_, idx * 600));
     return {id: kegg["ENTRY"]["KEGG ID"], data: await getPubchem(kegg)};
   });
 
@@ -69,7 +69,7 @@ function downloadBlob(data) {
 // Asynchronous recursive function to request PubChem Compound data
 async function requestCompound(pcid, attempt) {
   // Cancel if too many attempts
-  if (attempt > 9) return null;
+  if (attempt > 4) return null;
   // Get the compound data
   let data = await fetch(pubchemURI(pcid, "compound")).then(r => r.json());
   // If there's a fault
@@ -89,10 +89,11 @@ async function requestCompound(pcid, attempt) {
   return data["PC_Compounds"][0];
 };
 
+
 // Asynchronous recursive function to request PubChem Substance data
 async function requestSubstance(pcid, attempt) {
   // Quit if too many attempts
-  if (attempt > 9) return null;
+  if (attempt > 4) return null;
   // Get the data
   let data = await fetch(pubchemURI(pcid, "substance")).then(r => r.json());
   // If there's a fault
@@ -112,6 +113,7 @@ async function requestSubstance(pcid, attempt) {
   return data["PC_Substances"][0];
 };
 
+
 // Helper function to check the PubChem Compound result by comparing to the
 // KEGG Compound formula
 function checkCompound(data, keggFormula) {
@@ -126,6 +128,7 @@ function checkCompound(data, keggFormula) {
   return false;
 };
 
+
 // Helper function to check the PubChem Substance result for a PC Compound ID
 function checkSubstance(data) {
   // Null if data is null
@@ -137,10 +140,11 @@ function checkSubstance(data) {
   return pcSubCid[0].id.id.cid;
 };
 
+
 // Async operative function to attempt to collect the PubChem data
 // - Checks Compound, and gets Substance then requests first-neighbour CID
 //   collected from Substance data if formula doesn't match
-async function getPubchem(kegg, idx) {
+async function getPubchem(kegg) {
   // Get the current Compound data
   let pcid = kegg["DBLINKS"]["PubChem"];
   let pcCompound0 = await requestCompound(pcid, 0);
