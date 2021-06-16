@@ -6,6 +6,7 @@
 
 
 import json
+import argparse as ap
 import functools as ft
 import multiprocessing as mp
 
@@ -32,16 +33,20 @@ def merge_aliases(set_a, set_b):
 
 
 # Operative function to collect HMDB data for the current table entry
-def get_data(table_entry, hmdb_short, keys):
+def merge_data(entry, key, hmdb_alt, merge_keys):
+    # Get ID of current table entry and quit if None
+    ident = entry.get(key, None)
+    if ident is None:
+        return entry
     # Get data for current ID and cancel if none
-    data = hmdb_short.get(table_entry["KEGG ID"], None)
+    data = hmdb_alt.get(ident, None)
     if data is None:
-        return table_entry
+        return entry
     # Initialise new data and loop keys
-    ndata = {}
-    for k in keys:
+    ndata = entry.copy()
+    for k in merge_keys:
         d = data.get(k, None)
-        t = table_entry.get(k, None)
+        t = entry.get(k, None)
         # Use current if no new data
         if d is None:
             ndata[k] = t
@@ -56,8 +61,8 @@ def get_data(table_entry, hmdb_short, keys):
             continue
         # Cancel on ANY conflict
         if d != t:
-            return table_entry
-        # Enter the data (at this stage, d should be t
+            return entry
+        # Enter the data (at this stage, d should be t)
         ndata[k] = d
     return ndata
 
@@ -75,21 +80,66 @@ def msg(ty, tx):
     return None
 
 
+# Helper function to convert an array of dicts into a dict, whereby each key is
+# a unique value of data for a specific key
+def arrange_alt(data, key):
+    short = {}
+    for entry in data:
+        d = entry.get(key, None)
+        if d is not None:
+            if short.get(d, None) is not None:
+                short[d]["__keep"] = False
+                continue
+            short[d] = entry
+    final = {}
+    for s in short:
+        if short[s].get("__keep", True):
+            final[s] = short[s].copy()
+    return final
+
+
 # Operations
 # -----------------------------------------------------------------------------
 
 
-# Define file paths
-path = {
-    "in": {
-        "hmdb": "../_data/outCollect08Hmdb.json",
-        "table": "../_data/outConstruct06Kegg.json"
-    },
-    "out": "../_data/outAdd05Hmdb.json"
-}
+# Parse arguments
+aps = ap.ArgumentParser()
+aps.add_argument(
+    "--table",
+    help="Table to merge into")
+aps.add_argument(
+    "--hmdb",
+    help="HMDB data to merge from")
+aps.add_argument(
+    "--output-file",
+    help="Output JSON filename")
+aps.add_argument(
+    "--keys",
+    help="""
+        Keys to merge by, common to both the table and HMDB, delimited by a
+        pipe character.  Ordering may or may not be important!
+        The key will be created in the table if it does not already exist.
+    """)
+aps.add_argument(
+    "--num-cores",
+    type=int,
+    help="Optional argument to specify the number of CPU cores to use")
+args = aps.parse_args()
 
-# Define keys to search by
-keys = [
+# Get the number of cores to use
+if args.num_cores is None:
+    ncores = mp.cpu_count() - 2
+    if ncores < 1:
+        ncores = 1
+else:
+    ncores = args.num_cores
+
+# Sort out the keys
+keys = args.keys.split("|")
+msg("info", f'Found {len(keys)} keys')
+
+# Define keys to search by -- CURRENTLY HARDCODED, ACCORDING TO TABLE SPEC
+set_keys = [
     "SMILES",
     "Name",
     "Alias",
@@ -104,44 +154,49 @@ keys = [
     "PubChem ID"
 ]
 
+# Append the new keys to append to the table entries, if any
+for k in keys:
+    if k not in set_keys:
+        set_keys.append(k)
+
+# Don't merge self, no need
+merge_keys = [k for k in set_keys if k not in keys]
+
 # Read and parse input JSON data
 msg("data", "Reading input data")
-hmdb = read_json(path["in"]["hmdb"])
-table = read_json(path["in"]["table"])
-
-# Get the KEGG IDs seen in HMDB with only one entry
-msg("info", "Subsetting HMDB data to unique KEGG IDs")
-seen = {}
-for h in hmdb:
-    k = h.get("KEGG ID", None)
-    # Skip if no KEGG ID
-    if k is None:
-        continue
-    # Initialise seen if not currently found
-    if seen.get(k, None) is None:
-        seen[k] = {"n": 1, "data": h}
-        continue
-    # Increment and append data if already found
-    seen[k]["n"] += 1
-
-# Get the IDs found and initialise a store
-ids = list(seen.keys())
-uniq = {}
-for i in ids:
-    # If exactly one HMDB entry, keep the data
-    if seen[i]["n"] == 1:
-        uniq[i] = seen[i]["data"]
+hmdb = read_json(args.hmdb)
+table = read_json(args.table)
 
 # Run the worker pool to collect / merge the data
 msg("info", "Running worker pool -- merging non-ambiguous data")
-with mp.Pool(14) as worker_pool:
-    func = ft.partial(get_data, hmdb_short=uniq, keys=keys)
-    result = worker_pool.map(func, table)
+with mp.Pool(ncores) as worker_pool:
+    while keys:
+        msg("info", f'Arranging HMDB data by key:  {keys[0]}')
+        hmdb_alt = arrange_alt(hmdb, keys[0])
+        func = ft.partial(
+            merge_data,
+            key=keys[0],
+            hmdb_alt=hmdb_alt,
+            merge_keys=merge_keys)
+        msg("info", "Merging data")
+        table = worker_pool.map(func, table)  # Overwrites self
+        keys = keys[1:]
+
+# Reorder the key-value pairs according to the set keys
+msg("info", "Reordering table entry key-value pairs")
+ntable = []
+for tab in table:
+    nt = {}
+    for k in set_keys:
+        t = tab.get(k, None)
+        if t is not None:
+            nt[k] = t
+    ntable.append(nt)
 
 # Write output
-msg("data", f'Writing output file:  {path["out"]}')
-with open(path["out"], "w") as file:
-    file.write(f'{json.dumps(result, indent=2)}\n')
+msg("data", f'Writing output file:  {args.output_file}')
+with open(args.output_file, "w") as file:
+    file.write(f'{json.dumps(ntable, indent=2)}\n')
 
 # All finished
 msg("ok", "End of operations")
